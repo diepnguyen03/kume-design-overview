@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,8 +85,8 @@ tr.clickable.selected{background:#fbeeee;}
 footer{text-align:center;font-size:11px;color:var(--c-muted);padding:24px;}
 
 /* Work Breakdown by Task & Employee Allocation: center numbers under centered headers */
-#projTaskTable th.num, #empAllocationPivot th.num{text-align:center;}
-#projTaskTable td.num, #empAllocationPivot td.num{text-align:center;}
+#projTaskTable th.num, #empAllocationPivot th.num, #projectMasterTable th.num{text-align:center;}
+#projTaskTable td.num, #empAllocationPivot td.num, #projectMasterTable td.num{text-align:center;}
 .tree-row{cursor:pointer;}
 .tree-row:hover{background:#fafbfc;}
 .tree-arrow{display:inline-block;width:14px;color:var(--c-muted);}
@@ -691,7 +692,7 @@ function renderExecOverview(){
   const ranked = rankSrc.slice().sort((a,b)=>(b.marginPct===null?-999:b.marginPct)-(a.marginPct===null?-999:a.marginPct));
   const marginVals = ranked.map(p=>p.marginPct).filter(v=>v!==null && !isNaN(v));
   const minV = Math.min(0, ...marginVals), maxV = Math.max(0, ...marginVals);
-  const pad = Math.max(10, (maxV-minV)*0.18);
+  const pad = Math.max(15, Math.max(Math.abs(minV), Math.abs(maxV))*0.15);
   const axisMin = Math.floor((minV-pad)/10)*10, axisMax = Math.ceil((maxV+pad)/10)*10;
   makeChart('chartExecRank', { type:'bar', data:{ labels: ranked.map(p=>p.name), datasets:[{ data: ranked.map(p=>p.marginPct), backgroundColor: ranked.map(p=>flagOf(p.marginPct)==='green'?COLORS.good:flagOf(p.marginPct)==='yellow'?COLORS.warn:COLORS.bad) }] },
     options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, layout:{padding:{right:50,left:50}}, plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>Number(ctx.raw).toFixed(1)+'%'}}, outsideEndLabel:{enabled:true, formatter:v=>v.toFixed(1)+'%'}}, scales:{ x:{ min:axisMin, max:axisMax, title:{display:true,text:'Margin %'} } } }});
